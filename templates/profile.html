@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Juan Quintero">
+    <meta name="description" content="este proyecto lo he creado para demostrar que aprender a programar no es imposible">
+
+    <!-- Title -->
+    <title>Perfil</title>
+
+    <!-- External CSS Files -->
+    <link rel="stylesheet" href="{% static 'assets1/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'assets2/style.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <div class="profile-image">
+                    <img src="{{ profile.imagen.url }}" alt="">
+                </div>
+
+                <div class="profile-user-settings">
+                    <h6 class="profile-user-name">{{ profile.name|title }} {{ profile.last_name|title }}</h6>
+                    <h5 class="profile-user-name">@{{ profile.user.username }}</h5>
+
+                    {% if profile.user == request.user %}
+                        <a href="#" class="btn profile-edit-btn">Editar Profile</a>
+                    {% endif %}
+                    <button class="btn profile-settings-btn" aria-label="profile settings">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
+                    </button>
+                    {% if profile.user == request.user %}
+                        {% if follow_status %}
+                            <a href="{% url 'follow' profile.user 0 %}" class="btn profile-edit-btn" style="color: red;">Dejar de follow</a>
+                        {% else %}
+                            <a href="{% url 'follow' profile.user 1 %}" class="btn profile-edit-btn" style="color: green;">Seguir</a>
+                        {% endif %}
+                        <a href="#" class="btn profile-edit-btn">Message</a>
+                    {% endif %}
+                </div>
+
+                <div class="profile-bio">
+                    <p>{{ profile.bio }}</p>
+                    <p>{{ profile.location }}</p>
+                    <p>◉ <a href="{{ profile.url }}">{{ profile.url }}</a></p>
+                </div>
+
+                <div class="profile-stats">
+                    <ul>
+                        <li><span class="profile-stat-count">{{ count_post }}</span> posts</li>
+                        <li><span class="profile-stat-count">{{ count_followers }}</span> Seguidores</li>
+                        <li><span class="profile-stat-count">{{ count_following }}</span> Siguiendo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="gallery">
+                {% for post in posts %}
+                    <div class="gallery-item">
+                        <img src="{{ post.picture.url }}" class="gallery-image" alt="">
+                        <div class="gallery-item-info">
+                            <ul>
+                                <li class="gallery-item-likes"><i class="fas fa-heart" aria-hidden="true"></i> {{ post.likes.count }}</li>
+                                <li class="gallery-item-comments"><i class="fas fa-comment" aria-hidden="true"></i> {{ post.comments.count }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock content %}
